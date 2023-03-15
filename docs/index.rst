@@ -12,6 +12,7 @@ Version: |release|
    :caption: Contents:
 
    code_style
+   modules
 
 
 
