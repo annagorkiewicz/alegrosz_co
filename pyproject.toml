@@ -25,6 +25,7 @@ pytest-faker = "2.0.0"
 faker-commerce = "1.0.3"
 pytest-cov = "4.0.0"
 serializers = "^0.2.4"
+pytest-factoryboy = "2.5.1"
 
 
 [build-system]
