@@ -4,3 +4,5 @@ db.sqlite3
 
 docs/_build/*
 .coverage
+
+media/*
