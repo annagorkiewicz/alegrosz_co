@@ -46,9 +46,27 @@ def api_rf():
     return APIRequestFactory()
 
 
-@register
-class ProductFactory(factory.Factory):
-    class Meta:
-        model = Product
+# @register
+# class ProductFactory(factory.Factory):
+#     class Meta:
+#         model = Product
+#
+#     name = "Onion"
 
-    name = "Onion"
+
+@register
+class ProductFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "products.Product"
+
+    name = factory.Faker("sentence", locale="pl_PL")
+    description = factory.Faker("paragraph")
+    price = factory.Faker("pydecimal", left_digits=2, right_digits=2, positive=True, min_value=10, max_value=34)
+    image = factory.Faker("image_url")
+    stock_count = factory.Faker("pyint", min_value=1, max_value=50)
+    barcode = factory.Faker("ean13")
+
+
+@pytest.fixture
+def products_batch(db):
+    return ProductFactory.create_batch(60)

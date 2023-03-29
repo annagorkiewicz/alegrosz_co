@@ -2,6 +2,8 @@ import pytest
 from rest_framework import status
 from rest_framework.test import APIRequestFactory
 
+from conftest import ProductFactory
+from products.models import Product
 from products.viewsets import ProductViewSet
 
 
@@ -54,11 +56,7 @@ def test_all_products_viewsets_with_empty_db(db, api_rf):
     assert len(response.data.get("results")) == 0
 
 
-@pytest.mark.skip(reason="WIP")
-def test_product_factory(product):
-    products_list = [product for _ in range(60)]
-    print("*" * 23)
-    print(products_list[0] is products_list[1])
-    print("*" * 23)
+def test_product_factory(products_batch):
+    products = Product.objects.all()
 
-    assert product.name == "Onion"
+    assert products.count() == 60
