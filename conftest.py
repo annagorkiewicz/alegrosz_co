@@ -4,7 +4,7 @@ from faker import Faker
 import factory
 from pytest_factoryboy import register
 
-from products.models import Product
+from products.models import Product, Category
 
 fake = Faker("pl_PL")
 fake.add_provider(faker_commerce.Provider)
@@ -46,20 +46,14 @@ def api_rf():
     return APIRequestFactory()
 
 
-# @register
-# class ProductFactory(factory.Factory):
-#     class Meta:
-#         model = Product
-#
-#     name = "Onion"
-
-
 @register
 class ProductFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "products.Product"
 
-    name = factory.Faker("sentence", locale="pl_PL")
+    # name = factory.Faker("sentence", nb_words=3, locale="de_DE")
+    # name = fake.unique.sentence(nb_words=5)
+    name = factory.Sequence(lambda n: f"{factory.Faker('sequence', nb_words=3)} + {n}")
     description = factory.Faker("paragraph")
     price = factory.Faker("pydecimal", left_digits=2, right_digits=2, positive=True, min_value=10, max_value=34)
     image = factory.Faker("image_url")
@@ -70,3 +64,8 @@ class ProductFactory(factory.django.DjangoModelFactory):
 @pytest.fixture
 def products_batch(db):
     return ProductFactory.create_batch(60)
+
+
+@pytest.fixture
+def category_db(db):
+    return Category.objects.create(name="Potato")
