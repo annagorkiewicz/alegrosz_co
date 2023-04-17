@@ -1,4 +1,4 @@
-from rest_framework import status
+from rest_framework import status, parsers
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -11,6 +11,7 @@ from .paginators import CustomPaginator
 class ProductViewSet(ModelViewSet):
     queryset = models.Product.objects.all()
     serializer_class = serializers.ProductSerializer
+    parser_classes = [parsers.MultiPartParser, parsers.JSONParser]
 
     pagination_class = CustomPaginator
 
@@ -29,7 +30,13 @@ class ProductViewSet(ModelViewSet):
         return Response(data=self.serializer_class(product).data, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
-        pass
+        serializer = serializers.AddProductWithCategoriesAndSubcategoriesSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        product = serializer.create(serializer.validated_data)
+
+        product_serializer = serializers.ProductSerializer(product)
+
+        return Response(product_serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, pk=None, **kwargs):
         pass
